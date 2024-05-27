@@ -17,18 +17,25 @@
 
 
 
-local setName = function(name)
-local finalN = string.gsub(name,"\\n","\n")
-game:GetService("ReplicatedStorage").Core.Remote.Remote:FireServer("NameCheck", finalN)
-wait(1)
-game:GetService("ReplicatedStorage").Core.Remote.Remote:FireServer("NameSet", {})
-end
-
-
+-- variables
+local rs = game:GetService("RunService")
+local loopsp = 16
+local loopjp = 50
 local player = game:GetService("Players").LocalPlayer
 local character = player.Character
 local humanoid = character:WaitForChild("Humanoid")
 local TeleportService = game:GetService("TeleportService")
+local hrp = character.HumanoidRootPart
+local thickness = 10
+local lines = {}
+
+-- functions
+local function setName(name)
+    local finalN = string.gsub(name, "\\n", "\n")
+    game:GetService("ReplicatedStorage").Core.Remote.Remote:FireServer("NameCheck", finalN)
+    wait(1)
+    game:GetService("ReplicatedStorage").Core.Remote.Remote:FireServer("NameSet", {})
+end
 
 local function modifyHumanoidProperties(humanoid)
     if humanoid then
@@ -49,21 +56,23 @@ local function onPlayerRespawn()
     end
 end
 
+-- connections
 player.CharacterAdded:Connect(onCharacterAdded)
 player.CharacterRemoving:Connect(onPlayerRespawn)
+rs.Heartbeat:Connect(function()
+    humanoid.WalkSpeed = loopsp
+    humanoid.JumpPower = loopjp
+end)
 
-local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-local thickness = 10
-local lines = {}
-
-local NewEsp = function(from, to)
+-- main reason anyone uses this (esp)
+local function NewEsp(from, to)
     local line = Instance.new("LineHandleAdornment")
     line.Adornee = game.workspace.Terrain
     line.ZIndex = 1
     line.Parent = to
     line.AlwaysOnTop = true
     line.Thickness = thickness
-    line.Color3 = Color3.new(255,0,255)
+    line.Color3 = Color3.new(255, 0, 255)
     local startVector = from.Position
     local endVector = to.Position
     
@@ -73,7 +82,7 @@ local NewEsp = function(from, to)
     table.insert(lines, {line = line, start = from, target = to})
 end
 
-local UpdateEsp = function()
+local function UpdateEsp()
     while true do
         wait(0.025)
         
@@ -82,27 +91,27 @@ local UpdateEsp = function()
                 lineData.line:Destroy()
                 table.remove(lines, i)
             end
+            
             local startVector = lineData.start.Position
             local endVector = lineData.target.Position
-            
             local distance = (endVector - startVector).Magnitude
-            local factor = 1
             
-            local green = math.clamp(1 - distance / (300 * factor), 0, 1)
-            local red = math.clamp(distance / (300 * factor), 0, 1)
+            local green = math.clamp(1 - distance / (300 * 1), 0, 1)
+            local red = math.clamp(distance / (300 * 1), 0, 1)
             
             lineData.line.Color3 = Color3.new(red * 2, green * 2, 0)
             
             lineData.line.CFrame = CFrame.new(startVector, endVector)
             lineData.line.Length = distance
             if distance > 500 then
-                lineData.line.Transparency=.7
-                else
-                lineData.line.Transparency=0
+                lineData.line.Transparency = .7
+            else
+                lineData.line.Transparency = 0.2
             end
         end
     end
 end
+
 
 local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/nedlmous/robloxexploits/main/MLMOD.lua"))()
 
@@ -134,14 +143,14 @@ local Tab4 = GUI:Tab{
 }
 
 Tab:Button{
-    Name = "Adv ESP",
+    Name = "Advantage ESP",
     Description = nil,
     Callback = function()
     hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
         for _, v in pairs(game.Workspace:GetDescendants()) do
         if v:IsA("TouchTransmitter") and v.Parent:IsA("MeshPart") and v.Parent.Parent:IsA("Model") and v.Parent.Parent.Parent:IsA("MeshPart") and v.Parent.Parent.Parent.Parent:IsA("Model") then
                 NewEsp(hrp, v.Parent)
-                print("a")
+                print("found it")
     end
 end
 
@@ -180,7 +189,7 @@ Tab2:Slider{
         player = game:GetService("Players").LocalPlayer
     character = player.Character
     humanoid = character:WaitForChild("Humanoid")
-        humanoid.WalkSpeed = value
+        loopsp = value
     end
 }
 
@@ -193,7 +202,7 @@ Tab2:Slider{
     player = game:GetService("Players").LocalPlayer
     character = player.Character
     humanoid = character:WaitForChild("Humanoid")
-        humanoid.JumpPower = value
+        loopjp = value
     end
 }
 
