@@ -12,9 +12,11 @@
 
 
 
+--[[
+loadstring is down there
 
-
-
+loadstring(game:HttpGet("https://raw.githubusercontent.com/nedlmous3/making-roblox-silly/main/outlaster.luau"))()
+]]
 
 
 -- variables
