@@ -251,5 +251,3 @@ rs.Heartbeat:Connect(function()
     humanoid.WalkSpeed = loopsp
     humanoid.JumpPower = loopjp
 end)
-    end
-}
