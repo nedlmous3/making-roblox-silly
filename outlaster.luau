@@ -18,6 +18,12 @@ loadstring is down there
 loadstring(game:HttpGet("https://raw.githubusercontent.com/nedlmous3/making-roblox-silly/main/outlaster.luau"))()
 ]]
 
+-- objects
+local highlightesp = Instance.new("Highlight")
+highlightesp.FillTransparency = 0
+highlightesp.OutlineTransparency = 0
+highlightesp.OutlineColor = Color3.new(.5,1,1)
+highlightesp.FillColor = Color3.new(1,.5,1)
 
 -- variables
 local rs = game:GetService("RunService")
@@ -61,10 +67,6 @@ end
 -- connections
 player.CharacterAdded:Connect(onCharacterAdded)
 player.CharacterRemoving:Connect(onPlayerRespawn)
-rs.Heartbeat:Connect(function()
-    humanoid.WalkSpeed = loopsp
-    humanoid.JumpPower = loopjp
-end)
 
 -- main reason anyone uses this (esp)
 local function NewEsp(from, to)
@@ -182,6 +184,19 @@ Tab3:Button{
     end
 }
 
+Tab3:Button{
+    Name = "Flag It Down",
+    Description = "Flag ESP",
+    Callback = function()
+        for i,v in pairs(game.Workspace["Flag It Down"].Map.FlagSpawns:GetChildren()) do
+                if v.Name == "Base" then
+                local esp = highlightesp:Clone()
+                esp.Parent = v
+            end
+        end
+    end
+}
+
 Tab2:Slider{
     Name = "Speed",
     Default = humanoid.WalkSpeed,
@@ -229,5 +244,12 @@ Tab:Textbox{
     Description = "has new line support [ \\n ]",
     Callback = function(text)
     setName(text)
+end
+}
+
+rs.Heartbeat:Connect(function()
+    humanoid.WalkSpeed = loopsp
+    humanoid.JumpPower = loopjp
+end)
     end
 }
