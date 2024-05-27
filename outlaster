@@ -58,7 +58,7 @@ local lines = {}
 
 local NewEsp = function(from, to)
     local line = Instance.new("LineHandleAdornment")
-    line.Adornee = to
+    line.Adornee = game.workspace.Terrain
     line.ZIndex = 1
     line.Parent = to
     line.AlwaysOnTop = true
